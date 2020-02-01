@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ecs</name>
+  <version>0.1.0</version>
+  <description>
+    Meta-package for the environment classification system.
+  </description>
+  <maintainer email="neduchal@kky.zcu.cz">Petr Neduchal</maintainer>
+  <license>BSD</license>
+  <url type="website">http://github.com/neduchal/ecs</url>
+  <url type="bugtracker">http://github.com/ecs/issues</url>
+  <author email="neduchal@kky.zcu.cz">Petr Neduchal</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>ecs_core</exec_depend>
+  <export>
+    <metapackage />
+  </export>
+</package>
+

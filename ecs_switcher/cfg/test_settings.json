@@ -1,0 +1,15 @@
+{
+    "default_lf": "test1",
+    "lfs": [
+        [
+            "test1",
+            "sensor_switcher",
+            "node1.launch"
+        ],
+        [
+            "test2",
+            "sensor_switcher",
+            "node2.launch"
+        ]
+    ]
+}
