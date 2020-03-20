@@ -18,7 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   rosbag
   tf
   visualization_msgs
-  env_detection_msgs
   message_generation
 )
 
@@ -89,8 +88,8 @@ include_directories(
 
 ## Declare a cpp library
 add_executable(${PROJECT_NAME}
-src/env_detection_node.cpp
-src/EnvDetection.cpp
+src/ecs_detection_node.cpp
+src/ecs_detection.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

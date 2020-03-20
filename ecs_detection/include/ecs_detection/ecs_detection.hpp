@@ -22,28 +22,32 @@
 #include <nav_msgs/MapMetaData.h>
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <env_detection_msgs/EnvValue.h>
-#include <env_detection_msgs/GetLayers.h>
-#include <env_detection_msgs/GetLayer.h>
+#include <ecs_detection/EnvValue.h>
+#include <ecs_detection/GetLayers.h>
+#include <ecs_detection/GetLayer.h>
 
 using namespace grid_map; // Namespace of GRID MAP
 
-namespace env_detection {
+namespace ecs_detection {
 
-class EnvDetection  
+    const ros::V_string BASE_LAYER       = ros::V_string({"base"});
+    const std::string   BASE_LAYER_STR   =                  "base";    
+    const std::string   MAP_LAYER        =                   "map";    
+
+class EcsDetection  
 {
     public:
 
-    EnvDetection(ros::NodeHandle& nodeHandle, bool& success);
+    EcsDetection(ros::NodeHandle& nodeHandle, bool& success);
 
-    virtual ~EnvDetection();
+    virtual ~EcsDetection();
 
     bool readParameters();
 
-    void envValueCallback(const env_detection_msgs::EnvValue& msg);
+    void envValueCallback(const ecs_detection::EnvValue& msg);
     void inputMapCallback(const nav_msgs::OccupancyGrid& msg);
-    void getLayers(env_detection_msgs::GetLayers::Request &req, env_detection_msgs::GetLayers::Response &res);
-    void getLayer(env_detection_msgs::GetLayer::Request &req, env_detection_msgs::GetLayer::Response &res);
+    void getLayers(ecs_detection::GetLayers::Request &req, ecs_detection::GetLayers::Response &res);
+    void getLayer(ecs_detection::GetLayer::Request &req, ecs_detection::GetLayer::Response &res);
     void setLayerCallback(const grid_map_msgs::GridMap& msg);
     void publishGridMap();
     void getPose();

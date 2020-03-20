@@ -1,4 +1,4 @@
-#include <ecs_detection/EnvDetection.hpp>
+#include <ecs_detection/ecs_detection.hpp>
 
 #include <ros/ros.h>
 
@@ -7,7 +7,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "environment_detection_basic_node");
     ros::NodeHandle nodeHandle("~");
     bool success;
-    env_detection::EnvDetection envDetection(nodeHandle, success);
+    ecs_detection::EcsDetection ecsDetection(nodeHandle, success);
     if (!success) exit(1);
 
     ros::Time current_time = ros::Time::now();
@@ -16,10 +16,10 @@ int main(int argc, char** argv)
     {
         if ((ros::Time::now() - current_time).toSec() > 1)
         {
-            envDetection.publishGridMap();
+            ecsDetection.publishGridMap();
             current_time = ros::Time::now();
         }
-        envDetection.getPose();
+        ecsDetection.getPose();
         ros::spinOnce();
         rate.sleep();
     }
