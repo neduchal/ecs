@@ -51,6 +51,13 @@ def start_process(pkg_name, process_name):
         return start_node(pkg_name, process_name), "node"
 
 
+def stop_process(process, process_type):
+    if type == "launch":
+        stop_launch(process)
+    else:
+        stop_node(process)
+
+
 def find_and_launch(pkg_name, launch_filename):
     launch_file = get_launch_from_pkg(pkg_name, launch_filename)
     launch_file_arr = []
