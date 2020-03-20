@@ -1,0 +1,4 @@
+string layer
+---
+grid_map_msgs/GridMap map
+bool valid

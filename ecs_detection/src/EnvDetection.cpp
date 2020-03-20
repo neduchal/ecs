@@ -1,4 +1,4 @@
-#include <env_detection_core/EnvDetection.hpp>
+#include <ecs_detection/EnvDetection.hpp>
 
 /* 
  *  Environment detection system
