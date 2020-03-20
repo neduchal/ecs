@@ -45,10 +45,11 @@ def start_process(pkg_name, process_name):
     if (".launch" in process_name):
         launch_file = get_launch_from_pkg(pkg_name, process_name)
         launch_file_arr = []
-        launch_file_arr.append(launch_file) 
+        launch_file_arr.append(launch_file)
         return start_launch_file(launch_file_arr), "launch"
     else:
         return start_node(pkg_name, process_name), "node"
+
 
 def find_and_launch(pkg_name, launch_filename):
     launch_file = get_launch_from_pkg(pkg_name, launch_filename)
