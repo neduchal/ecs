@@ -1,6 +1,6 @@
 {
-    "default_lf": "test1",
-    "lfs": [
+    "default_process": "test1",
+    "processes": [
         [
             "test1",
             "sensor_switcher",

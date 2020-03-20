@@ -14,13 +14,13 @@ class SwitcherNode:
         self.switcher_list = []
         self.default_lf = None
         self.load_switcher_settings(setting_file)
-        self.run_process(self.default_lf)
 
     def run_process(self, id):
-        for lfs in self.switcher_list:
-            if (id == lfs[0]):
+        for process in self.switcher_list:
+            if (id == process[0]):
                 self.stop_process()
                 self.active_process = switcher_api.find_and_launch(lfs[1], lfs[2])        
+                self.active_process = switcher_api.start_process(process[1], process[2])
                 break   
         else:
             rospy.logwarn("Launch File %s Not Found", id)
