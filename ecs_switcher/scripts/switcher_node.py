@@ -19,8 +19,11 @@ class SwitcherNode:
     def run_process(self, id):
         for lfs in self.switcher_list:
             if (id == lfs[0]):
+                self.stop_process()
                 self.active_process = switcher_api.find_and_launch(lfs[1], lfs[2])        
-                break
+                break   
+        else:
+            rospy.logwarn("Launch File %s Not Found", id)
 
     def stop_process(self):
         switcher_api.stop_launch(self.active_process)
@@ -33,11 +36,10 @@ class SwitcherNode:
                 
 
     def callback_switch(self, data):
-        self.stop_process()
         self.run_process(data.data)
 
 if __name__ == "__main__":
     # TODO: Add ros params loading
-    rospy.init_node("switcher_node")
+    rospy.init_node("ecs_switcher_node")
     switcher_node = SwitcherNode("")
     rospy.spin()
