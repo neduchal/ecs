@@ -33,10 +33,10 @@ class ECS
     
     private:
     
-    ros::NodeHandle& nodeHandle_;
+    ros::NodeHandle& nh_;
 
-    std::string baseFrame_;
-    std::string mapFrame_;
+    std::string base_frame_;
+    std::string map_frame_;
 
 
 };

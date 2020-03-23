@@ -12,7 +12,7 @@ namespace ecs
 {
 
 ECS::ECS(ros::NodeHandle &nodeHandle)
-    : nodeHandle_(nodeHandle)
+    : nh_(nodeHandle)
 {
     read_parameters();
 }
