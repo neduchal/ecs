@@ -1,33 +1,33 @@
-#include <ecs_detection/ecs_detection.hpp>
+#include <ecs/map.hpp>
 
 /* 
  *  ECS detection system
  *
- *  Class EcsDetection is an entry point of the system.
+ *  Class Map is an entry point of the system.
  *
  *
  */
 using namespace grid_map;
 
-namespace ecs_detection
+namespace ecs
 {
-    EcsDetection::EcsDetection(ros::NodeHandle &node_handle)
+    Map::Map(ros::NodeHandle &node_handle)
         : nh_(node_handle)
     {
         readParameters();
         env_value_subscriber_ = nh_.subscribe(env_value_topic_,
                                                       100, 
-                                                      &EcsDetection::envValueCallback, 
+                                                      &Map::envValueCallback, 
                                                       this
                                                       );
         input_map_subscriber_ = nh_.subscribe(input_map_topic_, 
                                                       1, 
-                                                      &EcsDetection::inputMapCallback, 
+                                                      &Map::inputMapCallback, 
                                                       this
                                                       );
         set_layer_subscriber_ = nh_.subscribe(set_layer_topic_, 
                                                       10, 
-                                                      &EcsDetection::setLayerCallback, 
+                                                      &Map::setLayerCallback, 
                                                       this
                                                       );
         grid_map_publisher_ = nh_.advertise<grid_map_msgs::GridMap>(grid_map_topic_, 1, true);
@@ -41,11 +41,11 @@ namespace ecs_detection
         setup_done_ = false;
     }
 
-    EcsDetection::~EcsDetection()
+    Map::~Map()
     {
     }
 
-    void EcsDetection::readParameters()
+    void Map::readParameters()
     {
         nh_.param<std::string>("input_map_topic", input_map_topic_,       DEFAULT_MAP_TOPIC);
         nh_.param<std::string>("env_value_topic", env_value_topic_, DEFAULT_ENV_VALUE_TOPIC);
@@ -55,7 +55,7 @@ namespace ecs_detection
         nh_.param<std::string>("grid_map_topic",  grid_map_topic_,   DEFAULT_GRID_MAP_TOPIC);
     }
 
-    void EcsDetection::envValueCallback(const ecs_detection::EnvValue &msg)
+    void Map::envValueCallback(const ecs::EnvValue &msg)
     {
         if (!setup_done_)
             return;
@@ -77,7 +77,7 @@ namespace ecs_detection
         }
     }
 
-    void EcsDetection::getPose()
+    void Map::getPose()
     {
         try
         {
@@ -90,7 +90,7 @@ namespace ecs_detection
         }
     }
 
-    void EcsDetection::inputMapCallback(const nav_msgs::OccupancyGrid &msg)
+    void Map::inputMapCallback(const nav_msgs::OccupancyGrid &msg)
     {
         if (!converter_.fromOccupancyGrid(msg, BASE_LAYER, map_))
         {
@@ -102,11 +102,11 @@ namespace ecs_detection
                     map_.getSize()(0), map_.getSize()(1), map_.getPosition().x(), map_.getPosition().y(), map_.getFrameId().c_str());*/
             if (!setup_done_)
                 setup_done_ = true;
-            EcsDetection::getPose();
+            Map::getPose();
         }
     }
 
-    void EcsDetection::publishGridMap()
+    void Map::publishGridMap()
     {
         ros::Time time = ros::Time::now();
         map_.setTimestamp(time.toNSec());
@@ -116,7 +116,7 @@ namespace ecs_detection
         ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", msg.info.header.stamp.toSec());
     }
 
-    void EcsDetection::setLayerCallback(const grid_map_msgs::GridMap &msg)
+    void Map::setLayerCallback(const grid_map_msgs::GridMap &msg)
     {
         GridMap grid_map_layer = GridMap();
         converter_.fromMessage(msg, grid_map_layer);
@@ -130,7 +130,7 @@ namespace ecs_detection
         }
     }
 
-    void EcsDetection::getLayers(ecs_detection::GetLayers::Request &req, ecs_detection::GetLayers::Response &res)
+    void Map::getLayers(ecs::GetLayers::Request &req, ecs::GetLayers::Response &res)
     {
         std::vector<std::string> layers = map_.getLayers();
         for (std::size_t i = 0; i < layers.size(); ++i)
@@ -139,7 +139,7 @@ namespace ecs_detection
         }
     }
 
-    void EcsDetection::getLayer(ecs_detection::GetLayer::Request &req, ecs_detection::GetLayer::Response &res)
+    void Map::getLayer(ecs::GetLayer::Request &req, ecs::GetLayer::Response &res)
     {
         GridMap map_msg = GridMap();
         grid_map_msgs::GridMap msg;
@@ -160,4 +160,4 @@ namespace ecs_detection
         }
     }
 
-} // namespace ecs_detection
+} // namespace ecs

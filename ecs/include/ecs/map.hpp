@@ -1,5 +1,5 @@
-#ifndef ECS_DETECTION_H
-#define ECS_DETECTION_H
+#ifndef ECS_MAP_H
+#define ECS_MAP_H
 
 /**
  *  Environment Detection System (EDS)
@@ -25,13 +25,13 @@
 #include <nav_msgs/MapMetaData.h>
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <ecs_detection/EnvValue.h>
-#include <ecs_detection/GetLayers.h>
-#include <ecs_detection/GetLayer.h>
+#include <ecs/EnvValue.h>
+#include <ecs/GetLayers.h>
+#include <ecs/GetLayer.h>
 
 using namespace grid_map; 
 
-namespace ecs_detection 
+namespace ecs 
 {
     const std::string   BASE_LAYER              =                  "base";    
     const std::string   DEFAULT_MAP_TOPIC       =                   "map";
@@ -41,16 +41,16 @@ namespace ecs_detection
     const std::string   DEFAULT_BASE_FRAME      =             "base_link";
     const std::string   DEFAULT_MAP_FRAME       =                   "map";
 
-    class EcsDetection  
+    class Map  
     {
         public:
-            EcsDetection(ros::NodeHandle& node_handle);
-            virtual ~EcsDetection();
+            Map(ros::NodeHandle& node_handle);
+            virtual ~Map();
             void readParameters();
-            void envValueCallback(const ecs_detection::EnvValue& msg);
+            void envValueCallback(const ecs::EnvValue& msg);
             void inputMapCallback(const nav_msgs::OccupancyGrid& msg);
-            void getLayers(ecs_detection::GetLayers::Request &req, ecs_detection::GetLayers::Response &res);
-            void getLayer(ecs_detection::GetLayer::Request &req, ecs_detection::GetLayer::Response &res);
+            void getLayers(ecs::GetLayers::Request &req, ecs::GetLayers::Response &res);
+            void getLayer(ecs::GetLayer::Request &req, ecs::GetLayer::Response &res);
             void setLayerCallback(const grid_map_msgs::GridMap& msg);
             void publishGridMap();
             void getPose();
