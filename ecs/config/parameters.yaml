@@ -7,11 +7,11 @@ ecs_switcher:
 
   - name: test1
     pkg: ecs_switcher
-    node: node1.launch
+    process: node1.launch
 
   - name: test2
     pkg: ecs_switcher
-    node: node2.launch
+    process: node2.launch
 
 # GRID MAP PARAMETERS 
 grid_map_topic: /ecs/grid_map
