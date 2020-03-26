@@ -33,7 +33,7 @@ using namespace grid_map;
 
 namespace ecs
 {
-W
+
 const double GRID_MAP_PUBLISH_OFF = 0.0;
 const std::string BASE_LAYER = "base";
 const std::string DEFAULT_MAP_TOPIC = "map";
@@ -42,7 +42,7 @@ const std::string DEFAULT_SET_LAYER_TOPIC = "/ecs/set_layer";
 const std::string DEFAULT_GRID_MAP_TOPIC = "/ecs/grid_map";
 const std::string DEFAULT_BASE_FRAME = "base_link";
 const std::string DEFAULT_MAP_FRAME = "map";
-W
+
 class Map
 {
 public:
