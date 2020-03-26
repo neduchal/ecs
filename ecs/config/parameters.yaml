@@ -1,3 +1,19 @@
+# ECS CHANGE DETECTION PARAMETERS
+
+# ECS SWITCHER PARAMETERS
+ecs_switcher_default_process: test1
+
+ecs_switcher:
+
+  - name: test1
+    pkg: ecs_switcher
+    node: node1.launch
+
+  - name: test2
+    pkg: ecs_switcher
+    node: node2.launch
+
+# GRID MAP PARAMETERS 
 grid_map_topic: /ecs/grid_map
 
 grid_map_visualizations:
@@ -7,3 +23,6 @@ grid_map_visualizations:
     params:
       layer: temperature
       height: 0.1
+
+
+
