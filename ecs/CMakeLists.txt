@@ -28,6 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   EnvValue.msg
+  SensorValue.msg
 )
 
 ## Generate services in the 'srv' folder
