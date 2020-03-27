@@ -15,13 +15,10 @@ class SwitcherNode:
         self.processes = []
         self.default_process = None
         self.load_switcher_settings()
-        #self.switcher_sub_topic = rospy.get_param(
-        #    self.node_name + "/switcher_sub_topic", "/ecs/switcher/switch")
-        #self.switch_sub = rospy.Subscriber(
-        #    self.switcher_sub_topic, String, self.callback_switch)
+        self.switch_sub = rospy.Subscriber(
+            self.settings["input_topic"], String, self.callback_switch)
         self.active_process = None
         self.active_process_type = None
-
 
     def run_process(self, id):
         for process in self.processes:
@@ -43,7 +40,8 @@ class SwitcherNode:
             exit(1)
         self.settings = rospy.get_param("ecs_switcher")
         self.processes = rospy.get_param("ecs_switcher")["processes"]
-        self.default_process = [item["name"] for item in self.processes if "default" in item.keys()][0]
+        self.default_process = [item["name"]
+                                for item in self.processes if "default" in item.keys()][0]
 
     def callback_switch(self, data):
         self.run_process(data.data)

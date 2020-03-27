@@ -12,9 +12,8 @@ ecs_map:
   input_topic: /ecs/map/value
 
 # ECS SWITCHER PARAMETERS
-ecs_switcher_default_process: test1
-
 ecs_switcher: 
+  input_topic: /ecs/switcher/switch  
   processes:
     - name: test1
       pkg: ecs_switcher
