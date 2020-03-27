@@ -1,17 +1,29 @@
-# ECS CHANGE DETECTION PARAMETERS
+# ECS CHANGE DETECTOR PARAMETERS
+ecs_change_detector:
+  input_topic: /ecs/sensor_values
+  output_topic: 
+  sensors: 
+    - name: test1
+      method: ecs_switcher
+      parameters: {aaa:bbb}
+      republish: 1
+
+ecs_map:
+  input_topic: /ecs/map/value
 
 # ECS SWITCHER PARAMETERS
 ecs_switcher_default_process: test1
 
-ecs_switcher:
+ecs_switcher: 
+  processes:
+    - name: test1
+      pkg: ecs_switcher
+      process: node1.launch
+      default: yes
 
-  - name: test1
-    pkg: ecs_switcher
-    process: node1.launch
-
-  - name: test2
-    pkg: ecs_switcher
-    process: node2.launch
+    - name: test2
+      pkg: ecs_switcher
+      process: node2.launch
 
 # GRID MAP PARAMETERS 
 grid_map_topic: /ecs/grid_map
