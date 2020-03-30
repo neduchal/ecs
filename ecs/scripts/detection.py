@@ -7,7 +7,7 @@ from scipy.interpolate import splrep, splev
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
-def cusum_variance(x,mean=0,K=0):
+def cusum_variance(x,threshold, mean=0,K=0):
     """Tabular CUSUM per Montgomery,D. 1996 "Introduction to Statistical Process Control" p318 
     x    : series to analyze
     mean : expected process mean
@@ -25,7 +25,7 @@ def cusum_variance(x,mean=0,K=0):
         else:
             Cp[ii]=np.max([0,x[ii]-(mean+K)+Cp[ii-1]])
             Cm[ii]=np.max([0,(mean-K)-x[ii]+Cm[ii-1]])
-    return np.max(Cp - Cm)            
+    return np.max(Cp - Cm) >            
 
 def dirat(x, n_short, threshold=1.5, c=0.03):
     dx1 = np.mean(x[1:] - x[:-1])

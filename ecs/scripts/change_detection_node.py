@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import rospy
 from ecs.msg import SensorValue, EnvValue
-
+import sensor
 
 class ChangeDetectorNode:
 
@@ -28,7 +28,7 @@ class ChangeDetectorNode:
             env_msg.layer = sensor["name"]
             env_msg.value = msg.value
             self.republisher.publish(env_msg)
-        # TODO: process data using method
+        # TODO: Create sensors objects and process data
         # TODO: trigger
         pass
 
