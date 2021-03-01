@@ -11,13 +11,13 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   #rosbag  
-  visualization_msgs 
+  #visualization_msgs 
   tf   
   cv_bridge  
-  grid_map_core
-  grid_map_msgs
-  grid_map_cv
-  grid_map_ros
+  #grid_map_core
+  #grid_map_msgs
+  #grid_map_cv
+  #grid_map_ros
   sensor_msgs
   message_generation
 )
@@ -34,16 +34,18 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  GetLayers.srv
-  GetLayer.srv
+  Descriptor.srv
+  #GetLayers.srv
+  #GetLayer.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
   std_msgs
-  grid_map_msgs
+  #grid_map_msgs
   geometry_msgs
+  sensor_msgs
 )
 ###################################
 ## catkin specific configuration ##
@@ -61,10 +63,10 @@ catkin_package(
     ${PROJECT_NAME}
   CATKIN_DEPENDS
     roscpp
-    grid_map_core
-    grid_map_msgs
-    grid_map_cv
-    grid_map_ros
+    #grid_map_core
+    #grid_map_msgs
+    #grid_map_cv
+    #grid_map_ros
     sensor_msgs
     nav_msgs
     std_msgs
@@ -72,7 +74,7 @@ catkin_package(
     cv_bridge
     #rosbag
     tf
-    visualization_msgs
+    #visualization_msgs
     message_runtime
   DEPENDS
 )
@@ -89,37 +91,37 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_executable(${PROJECT_NAME}
-src/map_node.cpp
-src/map.cpp
-)
+#add_executable(${PROJECT_NAME}
+#src/map_node.cpp
+#src/map.cpp
+#)
 
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(${PROJECT_NAME}
+#  ${catkin_LIBRARIES}
+#)
 
-add_dependencies(${PROJECT_NAME}
-  ${catkin_EXPORTED_TARGETS}
-)
+#add_dependencies(${PROJECT_NAME}
+#  ${catkin_EXPORTED_TARGETS}
+#)
 
 #############
 ## Install ##
 #############
 
 # Mark executables and/or libraries for installation
-install(
-  TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+#install(
+#  TARGETS ${PROJECT_NAME}
+#  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
 
 # Mark cpp header files for installation
-install(
-  DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.hpp"
-)
+#install(
+#  DIRECTORY include/${PROJECT_NAME}/
+#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#  FILES_MATCHING PATTERN "*.hpp"
+#)
 
 #############
 ## Testing ##
