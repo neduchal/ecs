@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from rospy.core import rospyerr
 import rospy
 from ecs.msg import SensorValue, EnvValue
-import sensor
+from std_msgs.msg import Empty
+import cpd
 
 class DataAcquisition:
 
@@ -14,34 +16,40 @@ class DataAcquisition:
         self.load_settings()
         self.data_subscriber = rospy.Subscriber(
             self.settings["input_topic"], SensorValue, self.sensor_callback, queue_size=100)
-        ecs_map_topic = rospy.get_param("ecs_map/input_topic")
+        ecs_map_topic = rospy.get_param("ecs_map/input_topic", default="/map")
         self.republisher = rospy.Publisher(
             ecs_map_topic, EnvValue, queue_size=10)
+        self.trigger_publisher = rospy.Publisher("/ecs/trigger", Empty, queue_size=10)
 
     def sensor_callback(self, msg):
         if not msg.sensor in self.sensor_names:
             rospy.logwarn(
                 "Sensor %s is not subscribed by the node", msg.sensor)
         sensor = [item for item in self.sensors if item["name"] == msg.sensor]
-        if "republish" in sensor.keys():
+        if sensor.get("republish") == 1:
             env_msg = EnvValue()
             env_msg.layer = sensor["name"]
             env_msg.value = msg.value
             self.republisher.publish(env_msg)
-        # TODO: Create sensors objects and process data
-        # TODO: trigger
-        pass
+        sensor["detector"].addValue(msg.value)
+        if sensor["detector"].isChangePoint():
+            trigger = Empty()
+            self.trigger_publisher.publish(trigger)
 
     def load_settings(self):
-        if not rospy.has_param("ecs_data_acquisition"):
-            rospy.signal_shutdown("ECS Data acquisition parameters not found")
+        if not rospy.has_param("ecs_change_detector"):
+            rospy.signal_shutdown("ECS Change detector parameters not found")
         self.settings = rospy.get_param("ecs_data_acquisition")
         self.sensors = self.settings["sensors"]
         self.sensor_names = [item["name"] for item in self.sensors]
-
-    def set_sensors(self):
-        pass
-
+        for sensor in self.sensors:
+            par  = sensor["parameters"]
+            if sensor["method"] == "diffratio":
+                sensor["detector"] = cpd.DiffRatio(par["sensitivity_threshold"], par["min_length"])
+            elif sensor["method"] == "varratio":          
+                sensor["detector"] = cpd.VarRatio(par["var_stable"], par["sensitivity_threshold"], par["window_length"])
+            else:
+                rospyerr("Unknown detector")
 
 if __name__ == "__main__":
     rospy.init_node("ecs_data_acquisition_node")
