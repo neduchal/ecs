@@ -1,0 +1,39 @@
+# ECS CHANGE DETECTOR PARAMETERS
+ecs_data_acquisition:
+  input_topic: /ecs/sensor_values
+  output_topic: 
+  sensors: 
+    - name: sensor1
+      method: diffratio
+      parameters: {"sensitivity_threshold":1.4, "min_length":40}
+      republish: 1
+
+ecs_map:
+  input_topic: /ecs/map/value
+
+# ECS SWITCHER PARAMETERS
+ecs_switcher: 
+  input_topic: /ecs/switcher/switch  
+  processes:
+    - name: test1
+      pkg: ecs_switcher
+      process: node1.launch
+      default: yes
+
+    - name: test2
+      pkg: ecs_switcher
+      process: node2.launch
+
+# GRID MAP PARAMETERS 
+grid_map_topic: /ecs/grid_map
+
+grid_map_visualizations:
+
+  - name: temperature
+    type: flat_point_cloud
+    params:
+      layer: temperature
+      height: 0.1
+
+
+

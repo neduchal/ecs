@@ -4,34 +4,28 @@
 import rospy
 import switcher_api
 from std_msgs.msg import String
-import cjson
 
 
 class SwitcherNode:
 
     def __init__(self):
 
-        self.node_name = rospy.get_name()
-        self.settings_file = rospy.get_param(
-            self.node_name + "/settings_file", "")
-        if self.settings_file == "":
-            quit(0)
-        self.switcher_sub_topic = rospy.get_param(
-            self.node_name + "/switcher_sub_topic", "/ecs/switcher/switch")
+        #self.node_name = rospy.get_name()
+        self.settings = None
+        self.processes = []
+        self.default_process = None
+        self.load_switcher_settings()
         self.switch_sub = rospy.Subscriber(
-            self.switcher_sub_topic, String, self.callback_switch)
+            self.settings["input_topic"], String, self.callback_switch)
         self.active_process = None
         self.active_process_type = None
-        self.switcher_list = []
-        self.default_lf = None
-        self.load_switcher_settings(self.settings_file)
 
     def run_process(self, id):
-        for process in self.switcher_list:
-            if (id == process[0]):
+        for process in self.processes:
+            if (id == process["name"]):
                 self.stop_process()
                 self.active_process, self.active_process_type = switcher_api.start_process(
-                    process[1], process[2])
+                    process["pkg"], process["process"])
                 break
         else:
             rospy.logwarn("Process %s Not Found", id)
@@ -40,10 +34,14 @@ class SwitcherNode:
         switcher_api.stop_process(
             self.active_process, self.active_process_type)
 
-    def load_switcher_settings(self, filename):
-        settings = cjson.load(filename)
-        self.switcher_list = settings["processes"]
-        self.default_lf = settings["default_process"]
+    def load_switcher_settings(self):
+        if not rospy.has_param("ecs_switcher"):
+            rospy.signal_shutdown("ECS Switcher parameters not found!")
+            exit(1)
+        self.settings = rospy.get_param("ecs_switcher")
+        self.processes = rospy.get_param("ecs_switcher")["processes"]
+        self.default_process = [item["name"]
+                                for item in self.processes if "default" in item.keys()][0]
 
     def callback_switch(self, data):
         self.run_process(data.data)

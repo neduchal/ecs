@@ -1,9 +1,0 @@
-grid_map_topic: /ecs/grid_map
-
-grid_map_visualizations:
-
-  - name: temperature
-    type: flat_point_cloud
-    params:
-      layer: temperature
-      height: 0.1

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+  <launch>
+
+    <!-- DESCRIPTOR NODE IN CASE OF CLASSIC CLASSIFICATION APPROACH (pick one) -->
+    <node pkg="ecs" type="centrist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" />
+    <!-- <node pkg="ecs" type="gist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" /> -->
+
+    <!-- <include file="$(find env_detection_core)/launch/gmapping.launch" /> -->
+    <node pkg="ecs" type="data_acquisition_node.py" name="ecd_node" output="screen" respawn="false" respawn_delay="0" />
+    <node pkg="ecs" type="classification_classic_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" />
+    <!-- <node pkg="ecs" type="classification_torch_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" /> -->
+
+    <node pkg="ecs" type="switcher_node.py" name="rba_node" output="screen" respawn="false" respawn_delay="0" />
+
+</launch>
+  
