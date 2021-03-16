@@ -12,11 +12,9 @@ from PIL import Image as Image
 class CentristDescriptor:
 
     def __init__(self):
-        self.cl = centrist.load()
         self.desc_length = 256
         self.cv_bridge = CvBridge()
         self.descriptor_service = rospy.Service("/ecs/descriptor", Descriptor, self.handle_descriptor_service)
-        pass
 
     def handle_descriptor_service(self, req):
         img = self.cv_bridge.imgmsg_to_cv2(req.img, desired_encoding="CV_8UC3")
