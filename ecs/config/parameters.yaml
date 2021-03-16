@@ -1,11 +1,11 @@
 # ECS CHANGE DETECTOR PARAMETERS
-ecs_change_detector:
+ecs_data_acquisition:
   input_topic: /ecs/sensor_values
   output_topic: 
   sensors: 
-    - name: test1
-      method: dirat
-      parameters: {aaa:bbb}
+    - name: sensor1
+      method: diffratio
+      parameters: {"sensitivity_threshold":1.4, "min_length":40}
       republish: 1
 
 ecs_map:

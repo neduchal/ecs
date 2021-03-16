@@ -6,7 +6,7 @@
     <!-- <node pkg="ecs" type="gist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" /> -->
 
     <!-- <include file="$(find env_detection_core)/launch/gmapping.launch" /> -->
-    <node pkg="ecs" type="change_detection_node.py" name="ecd_node" output="screen" respawn="false" respawn_delay="0" />
+    <node pkg="ecs" type="data_acquisition_node.py" name="ecd_node" output="screen" respawn="false" respawn_delay="0" />
     <node pkg="ecs" type="classification_classic_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" />
     <!-- <node pkg="ecs" type="classification_torch_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" /> -->
 
