@@ -20,7 +20,10 @@ find_package(catkin REQUIRED COMPONENTS
   #grid_map_ros
   sensor_msgs
   message_generation
+  rostest
 )
+
+catkin_python_setup()
 
 ## System dependencies are found with CMake's conventions
 #find_package(Eigen3 REQUIRED)
@@ -123,6 +126,11 @@ include_directories(
 #  FILES_MATCHING PATTERN "*.hpp"
 #)
 
+install(PROGRAMS
+     scripts/cpd.py
+     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 #############
 ## Testing ##
 #############
@@ -139,3 +147,5 @@ include_directories(
 #if(TARGET ${PROJECT_NAME}-test)
 #  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 #endif()
+
+

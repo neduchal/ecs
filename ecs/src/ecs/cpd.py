@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -14,12 +14,12 @@ class DiffRatio:
 
     def addValue(self, value):
         self.short_term_window_.append(value)
-        if len(self.short_term_window_) > self.min_length_:
+        if len(self.short_term_window_) > self.min_length_ :
             self.short_term_window_.pop(0)
         self.long_term_window_.append(value)
 
     def isReady(self):
-        if len(self.short_term_window_) == self.min_length_:
+        if len(self.short_term_window_) == self.min_length_ :
             return True
         return False
 
@@ -31,7 +31,7 @@ class DiffRatio:
         ratio = short_mean/float(long_mean)
         trigger = np.max([ratio, 1/ratio])
         if trigger > self.sensitivity_threshold_:
-            if len(self.long_term_window_ > self.min_length_):
+            if len(self.long_term_window_) > self.min_length_:
                 self.long_term_window_ = self.long_term_window_[-self.min_length_:]
             return True
         return False
@@ -58,7 +58,7 @@ class VarRatio:
     def isChangePoint(self):
         if not self.isReady():
             return False        
-        trigger = np.var(self.short_term_window_)
+        trigger = np.var(self.window_)
         if trigger > (self.sensitivity_threshold_ * self.var_stable_):
             return True
         return False
