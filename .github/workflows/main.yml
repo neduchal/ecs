@@ -70,7 +70,7 @@ jobs:
           cd ~/catkin_ws
           source devel/setup.bash          
           cd ~/catkin_ws/src/work/ecs/ecs/ecs/test
-          python3 -m cpd_tests.py
+          python3 -m cpd_tests
              
         #   cd ${{ steps.rosPackageBuild.outputs.ros-workspace-directory-name}}
          #  source ./devel/setup.bash
