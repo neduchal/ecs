@@ -62,7 +62,7 @@ jobs:
           echo "::warning `ls -l`"
           cd ..
           catkin build
-          cd ~/catkin_ws/src/work
+          cd ~/catkin_ws/src/work/ecs
           echo "::warning $CI_SOURCE_PATH"
           echo "::warning `ls -l`"          
       - name: RUN TESTS
