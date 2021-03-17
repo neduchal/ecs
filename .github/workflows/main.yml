@@ -67,6 +67,8 @@ jobs:
           echo "::warning `ls -l`"          
       - name: RUN TESTS
         run: |
+          cd ~/catkin_ws
+          source devel/setup.bash          
           cd ~/catkin_ws/src/work/ecs/ecs/ecs/test
           python3 -m cpd_tests.py
              
