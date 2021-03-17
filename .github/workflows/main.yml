@@ -67,7 +67,7 @@ jobs:
           echo "::warning `ls -l`"          
       - name: RUN TESTS
         run: |
-          cd ~/catkin_ws/src/work/ecs/ecs/test
+          cd ~/catkin_ws/src/work/ecs/ecs/ecs/test
           python3 -m cpd_tests.py
              
         #   cd ${{ steps.rosPackageBuild.outputs.ros-workspace-directory-name}}
