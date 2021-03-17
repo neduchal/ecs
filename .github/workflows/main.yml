@@ -39,7 +39,7 @@ jobs:
         id: rosPackageBuild
       - name: RUN TESTS
         run: |
-          cd ${{ steps.outputs.ros-workspace-directory-name}}
+          cd ${{ steps.rosPackageBuild.outputs.ros-workspace-directory-name}}
           source ./devel/setup.bash
           cd src/ecs/ecs/test
           python3 -m cpd_tests.py
