@@ -10,8 +10,8 @@ ecs_data_acquisition:
     - name: sensor2
       method: varratio
       parameters: {"sensitivity_threshold":1.4, "window_length":40, "var_stable":1.0}
-      republish: 1      
-
+      republish: 1
+      
 ecs_map:
   input_topic: /ecs/map/value
 

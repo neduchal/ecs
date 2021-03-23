@@ -1,15 +1,25 @@
 <?xml version="1.0"?>
   <launch>
+    <!-- LOAD YAML FILE PARAMETERS -->
+    <rosparam file="$(find ecs)/config/parameters.yaml" />
 
     <!-- DESCRIPTOR NODE IN CASE OF CLASSIC CLASSIFICATION APPROACH (pick one) -->
-    <node pkg="ecs" type="centrist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" />
-    <!-- <node pkg="ecs" type="gist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" /> -->
+    <!-- <node pkg="ecs" type="centrist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" /> -->
+    <node pkg="ecs" type="gist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" />
 
-    <!-- <include file="$(find env_detection_core)/launch/gmapping.launch" /> -->
     <node pkg="ecs" type="data_acquisition_node.py" name="ecd_node" output="screen" respawn="false" respawn_delay="0" />
-    <node pkg="ecs" type="classification_classic_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" />
+
+    <!-- IMAGE BASED CLASSIFICATION NODE -->
+    <node pkg="ecs" type="classification_classic_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0">
+      <!-- EXAMPLE OF JOBLIB SETTINGS: Classifier is SVM based on GIST with default settings in leargist package -->
+      <param name="/ecs/classifier_classic" value="$(find ecs)/joblibs/svm_gist.joblib"/> 
+      <param name="/ecs/image_topic" value="/camera/image_raw" />
+      <param name="/ecs/trigger_topic" value="/ecs/trigger"/>
+      <param name="/ecs/decision_topic" value="/ecs/decision"/>    
+    </node>
     <!-- <node pkg="ecs" type="classification_torch_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" /> -->
 
+    <!-- ROBOT BEHAVIOR ADAPTATION NODE -->
     <node pkg="ecs" type="switcher_node.py" name="rba_node" output="screen" respawn="false" respawn_delay="0" />
 
 </launch>
