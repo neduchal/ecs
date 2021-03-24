@@ -6,6 +6,7 @@ from ecs.msg import SensorValue, EnvValue
 from std_msgs.msg import Empty
 import cpd
 
+
 class DataAcquisition:
 
     def __init__(self):
@@ -19,7 +20,8 @@ class DataAcquisition:
         ecs_map_topic = rospy.get_param("ecs_map/input_topic", default="/map")
         self.republisher = rospy.Publisher(
             ecs_map_topic, EnvValue, queue_size=10)
-        self.trigger_publisher = rospy.Publisher("/ecs/trigger", Empty, queue_size=10)
+        self.trigger_publisher = rospy.Publisher(
+            "/ecs/trigger", Empty, queue_size=10)
 
     def sensor_callback(self, msg):
         if not msg.sensor in self.sensor_names:
@@ -43,13 +45,16 @@ class DataAcquisition:
         self.sensors = self.settings["sensors"]
         self.sensor_names = [item["name"] for item in self.sensors]
         for sensor in self.sensors:
-            par  = sensor["parameters"]
+            par = sensor["parameters"]
             if sensor["method"] == "diffratio":
-                sensor["detector"] = cpd.DiffRatio(par["sensitivity_threshold"], par["min_length"])
-            elif sensor["method"] == "varratio":          
-                sensor["detector"] = cpd.VarRatio(par["var_stable"], par["sensitivity_threshold"], par["window_length"])
+                sensor["detector"] = cpd.DiffRatio(
+                    par["sensitivity_threshold"], par["min_length"])
+            elif sensor["method"] == "varratio":
+                sensor["detector"] = cpd.VarRatio(
+                    par["var_stable"], par["sensitivity_threshold"], par["window_length"])
             else:
                 rospyerr("Unknown detector")
+
 
 if __name__ == "__main__":
     rospy.init_node("ecs_data_acquisition_node")

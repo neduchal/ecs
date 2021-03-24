@@ -30,6 +30,7 @@ def spatial_histogram(image, w_cells, h_cells, bins, min_range=0, max_range=255)
             sp_hist = np.concatenate((sp_hist, h))
     return sp_hist
 
+
 def spatial_histogram_bw(image, w_cells, h_cells, bins, min_range=0, max_range=255):
     w_step = image.shape[0]//w_cells
     h_step = image.shape[1]//h_cells
@@ -40,6 +41,7 @@ def spatial_histogram_bw(image, w_cells, h_cells, bins, min_range=0, max_range=2
             h, _ = histogram(b, bins, min_range, max_range)
             sp_hist = np.concatenate((sp_hist, h))
     return sp_hist
+
 
 def spatial_histogram_hsv(image, w_cells, h_cells, bins):
     image = bgr_to_hsv(image)
@@ -55,6 +57,7 @@ def spatial_histogram_hsv(image, w_cells, h_cells, bins):
             h = np.concatenate((h1, h2, h3))
             sp_hist = np.concatenate((sp_hist, h))
     return sp_hist
+
 
 def spatial_nbhs(image, w_cells, h_cells):
     image = bgr_to_hsv(image)

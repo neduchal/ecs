@@ -3,6 +3,11 @@
 
 import numpy as np
 
+"""
+    Change Point Detection algorithms for ECS
+
+    @version 1.0.0
+"""
 
 class DiffRatio:
 
@@ -14,12 +19,12 @@ class DiffRatio:
 
     def addValue(self, value):
         self.short_term_window_.append(value)
-        if len(self.short_term_window_) > self.min_length_ :
+        if len(self.short_term_window_) > self.min_length_:
             self.short_term_window_.pop(0)
         self.long_term_window_.append(value)
 
     def isReady(self):
-        if len(self.short_term_window_) == self.min_length_ :
+        if len(self.short_term_window_) == self.min_length_:
             return True
         return False
 
@@ -32,7 +37,8 @@ class DiffRatio:
         trigger = np.max([ratio, 1/ratio])
         if trigger > self.sensitivity_threshold_:
             if len(self.long_term_window_) > self.min_length_:
-                self.long_term_window_ = self.long_term_window_[-self.min_length_:]
+                self.long_term_window_ = self.long_term_window_[
+                    -self.min_length_:]
             return True
         return False
 
@@ -57,7 +63,7 @@ class VarRatio:
 
     def isChangePoint(self):
         if not self.isReady():
-            return False        
+            return False
         trigger = np.var(self.window_)
         if trigger > (self.sensitivity_threshold_ * self.var_stable_):
             return True
