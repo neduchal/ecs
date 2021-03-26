@@ -32,7 +32,7 @@ class ImageBasedEnvironmentClassification:
         self.trigger_topic = rospy.get_param(
             "/ecs/trigger_topic", default="/ecs/trigger")
         self.decision_topic = rospy.get_param(
-            "/ecs/decision_topic", default="/ecs/decision_topic")
+            "/ecs/decision_topic", default="/ecs/decision")
         self.num_classes = 2
         self.image_subscriber = rospy.Subscriber(
             self.image_topic, Image, callback=self.image_subscriber_callback, queue_size=1)

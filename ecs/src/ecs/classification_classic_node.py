@@ -22,7 +22,7 @@ class ImageBasedEnvironmentClassification:
         self.trigger_topic = rospy.get_param(
             "/ecs/trigger_topic", default="/ecs/trigger")
         self.decision_topic = rospy.get_param(
-            "/ecs/decision_topic", default="/ecs/decision_topic")
+            "/ecs/decision_topic", default="/ecs/decision")
         self.descriptor_servicename = rospy.get_param(
             "/ecs/descriptor_service", default="/ecs/descriptor")
         self.classifier = load(self.classifier_file)  # joblib load
