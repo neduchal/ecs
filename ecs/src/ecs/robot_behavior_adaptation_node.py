@@ -10,9 +10,15 @@ import switcher_api
 
 class RBANode:
 
+    """
+        Robot Behaviour Adaptation Node Class
+
+        It is supposed to react on the deecision of the Image Based Classification Node
+        by running predefined (in config file) set of commands.
+    """
+
     def __init__(self):
 
-        #self.node_name = rospy.get_name()
         self.settings = None
         self.behaviors = []
         self.active_behavior_id = None
@@ -24,15 +30,13 @@ class RBANode:
     def load_settings(self):
         self.settings = rospy.get_param("ecs_rba")
         self.behaviors = self.settings["behaviors"]
-        self.default_behavior = [item["id"]
-                                 for item in self.behaviors if "default" in item.keys()][0]
 
     def decision_callback(self, msg):
-        self.active_behavior = msg.data
+        self.set_active_robot_behavior(msg.data)
 
     def set_command(self, cmd):
         rospy.set_param(cmd[1], cmd[2])
-        rospy.loginfo(f"Parameter {cmd[1]} set to value {cmd[2]}")        
+        rospy.loginfo(f"Parameter {cmd[1]} set to value {cmd[2]}")
 
     def stop_command(self, cmd):
         for item in self.running_processes:
