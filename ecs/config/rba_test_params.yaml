@@ -1,0 +1,11 @@
+ecs_rba: 
+  input_topic: /ecs/decision
+  behaviors:
+    - id: 0
+      default: yes
+      commands: 
+        - set_param, decision, indoor
+        - set_param, test_param, 1
+    - id: 1
+      commands: 
+        - type: set_param, decision, outdoor
