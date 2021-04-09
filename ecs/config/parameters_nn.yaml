@@ -18,9 +18,9 @@ ecs_ibec:
   trigger_topic: /ecs/trigger
   camera_topic: /camera/color/image_raw
   decision_topic: /ecs/decision
-  classifier_pkg: ecs
-  classifier_file: joblibs/svm_centrist_4_4_16.joblib
-  descriptor_service: /ecs/descriptor
+  network_name: "vgg16"
+  network_device: "gpu"
+  number_of_classes: 2
   class_mapping:
     "0": indoor
     "1": outdoor
