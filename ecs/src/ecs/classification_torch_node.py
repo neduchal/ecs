@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import rospy
+import rospkg
 import numpy as np
 import torch
 import torchvision
@@ -12,7 +14,7 @@ import torchvision.models as models
 #import torch.optim as optim
 import torchvision.transforms as transforms
 import pretrainedmodels
-from std_msgs.msg import Empty, Int8
+from std_msgs.msg import Empty, String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from PIL import Image as pImage
@@ -23,26 +25,30 @@ class ImageBasedEnvironmentClassification:
     def __init__(self):
         # load parameters
         # ! SUMMARY PARAMETERS IN DOCUMENTATION
-        self.network_name = rospy.get_param(
-            "/ecs/neural_network_name", default="vgg16")
-        self.network_device = rospy.get_param(
-            "/ecs/neural_network_device", default="cpu")
-        self.image_topic = rospy.get_param(
-            "/ecs/image_topic", default="/camera/image_raw")
-        self.trigger_topic = rospy.get_param(
-            "/ecs/trigger_topic", default="/ecs/trigger")
-        self.decision_topic = rospy.get_param(
-            "/ecs/decision_topic", default="/ecs/decision")
-        self.num_classes = 2
+        self.settings = None
+        self.load_settings()
+        rospack = rospkg.RosPack()
+        self.models_path = os.path.join(rospack.get_path("ecs"), "models")
+        self.network_name = self.settings["network_name"]
+        self.network_device = self.settings["network_device"]
+        if self.settings.get("number_of_classes") == None:
+            self.settings["number_of_classes"] = 2
         self.image_subscriber = rospy.Subscriber(
-            self.image_topic, Image, callback=self.image_subscriber_callback, queue_size=1)
+            self.settings["camera_topic"], Image, callback=self.image_subscriber_callback, queue_size=1)
         self.trigger_subscriber = rospy.Subscriber(
-            self.trigger_topic, Empty, callback=self.trigger_callback, queue_size=1)
+            self.settings["trigger_topic"], Empty, callback=self.trigger_callback, queue_size=1)
         self.decision_publisher = rospy.Publisher(
-            self.decision_topic, Int8, queue_size=10)
+            self.settings["decision_topic"], String, queue_size=10)
         self.img = None
         self.net = None
         self.cv_bridge = CvBridge()
+
+        self.print_info(f"Network name {self.network_name}")
+        self.print_info(f"Network device {self.network_device}")
+        self.print_info(f"Number of Clases {self.settings['number_of_classes']}")
+        self.print_info(f"Camera topic {self.settings['camera_topic']}")
+        self.print_info(f"Trigger topic {self.settings['trigger_topic']}")
+        self.print_info(f"Decision_topic {self.settings['decision_topic']}")
 
         self.load_neural_network()
         if self.network_device == "gpu":
@@ -57,44 +63,50 @@ class ImageBasedEnvironmentClassification:
 
         self.loader = transforms.Compose([transforms.ToTensor()])
 
+    def print_info(self, msg):
+        rospy.loginfo(f"[{rospy.get_name()}]: {msg}")
+
+    def load_settings(self):
+        self.settings = rospy.get_param("ecs_ibec")
+
     def load_neural_network(self):
         if self.network_name == "vgg16":
             self.net = models.vgg16_bn(pretrained=False)
             num_ftrs = self.net.classifier[6].in_features
-            self.net.classifier[6] = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load('models/VGG16_best.pth'))
+            self.net.classifier[6] = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, "VGG16_best.pth")))
         elif self.network_name == "densenet":
             self.net = models.densenet161(pretrained=False)
             num_ftrs = self.net.classifier.in_features
-            self.net.classifier = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load('models/DenseNet_best.pth'))
+            self.net.classifier = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, 'DenseNet_best.pth')))
         elif self.network_name == "xception":
             self.net = pretrainedmodels.xception()
             num_ftrs = self.net.last_linear.in_features
-            self.net.last_linear = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load('models/Xception_best.pth'))
+            self.net.last_linear = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, 'Xception_best.pth')))
         elif self.network_name == "wide_resnet50":
             self.net = models.wide_resnet50_2(pretrained=True)
             num_ftrs = self.net.fc.in_features
-            self.net.fc = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load('models/ResNetWide_best.pth'))
+            self.net.fc = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, 'ResNetWide_best.pth')))
         elif self.network_name == "resnext":
             self.net = models.resnext50_32x4d(pretrained=True)
             num_ftrs = self.net.fc.in_features
-            self.net.fc = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load('models/ResNext_best.pth'))
+            self.net.fc = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, 'ResNext_best.pth')))
         elif self.network_name == "inceptionresnetv2":
             self.net = models.wide_resnet50_2(pretrained=True)
             num_ftrs = self.net.fc.in_features
-            self.net.fc = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load(
-                'models/InceptionResNetv2_best.pth'))
+            self.net.fc = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, 
+         'InceptionResNetv2_best.pth')))
         elif self.network_name == "inceptionv4":
             self.net = pretrainedmodels.inceptionv4()
             self.net.avg_pool = nn.AvgPool2d(kernel_size=2, stride=2)
             num_ftrs = self.net.last_linear.in_features
-            self.net.last_linear = nn.Linear(num_ftrs, self.num_classes)
-            self.net.load_state_dict(torch.load('models/InceptionV4_best.pth'))
+            self.net.last_linear = nn.Linear(num_ftrs, self.settings["number_of_classes"])
+            self.net.load_state_dict(torch.load(os.path.join(self.models_path, 'InceptionV4_best.pth')))
         else:
             self.net = None
             print("unknown neural network architecture")
@@ -116,10 +128,14 @@ class ImageBasedEnvironmentClassification:
         elif self.network_device == "cpu":
             predictions = self.net(image).cpu().argmax()
         else:
-            exit(1)
             print("Unkwown device type")
-            prediction = predictions.detach().numpy()
-        self.decision_publisher.publish(prediction)
+            exit(1)
+        prediction = predictions.detach().numpy()
+        prediction_text =  self.settings.get("class_mapping").get(str(prediction))
+        if prediction_text is None:
+            self.print_info(f"Unknown class prediction [class mapping is missing]")
+            return
+        self.decision_publisher.publish(prediction_text)
 
 
 if __name__ == "__main__":
