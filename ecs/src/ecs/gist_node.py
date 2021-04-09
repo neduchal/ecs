@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -10,7 +10,7 @@ from ecs.srv import Descriptor, DescriptorResponse
 from PIL import Image as Image
 
 
-class CentristDescriptor:
+class GistDescriptor:
 
     def __init__(self):
         self.desc_length = 256
@@ -32,6 +32,6 @@ class CentristDescriptor:
 
 
 if __name__ == "__main__":
-    rospy.init_node("ecs_centrist_descriptor")
-    centrist_obj = CentristDescriptor()
+    rospy.init_node("ecs_gist_descriptor")
+    gist_obj = GistDescriptor()
     rospy.spin()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -7,14 +7,19 @@ import description as desc
 import centrist
 from cv_bridge import CvBridge
 from ecs.srv import Descriptor, DescriptorResponse
+import cv2
 
 
 class CentristDescriptor:
 
     def __init__(self):
         self.cl = centrist.load()
-        self.desc_length = 256
+        self.node_name = rospy.get_name()
         self.cv_bridge = CvBridge()
+        self.spatial_division = rospy.get_param(
+            self.node_name + "/spatial_division", default=1)
+        self.desc_length = rospy.get_param(
+            self.node_name + "/description_length", default=256)
         self.descriptor_service = rospy.Service(
             "/ecs/descriptor", Descriptor, self.handle_descriptor_service)
         pass
@@ -26,13 +31,13 @@ class CentristDescriptor:
 
     def process_single_channel(self, im_one_channel):
         centrist_im = centrist.centrist_im(self.cl, im_one_channel)
-        return desc.spatial_histogram_bw(centrist_im, 1, 1, self.desc_length)
+        return desc.spatial_histogram_bw(centrist_im, self.spatial_division, self.spatial_division, self.desc_length)
 
-    def process_img(self, im):
-        h1 = self.process_single_channel(im[:, :, 0])
-        h2 = self.process_single_channel(im[:, :, 1])
-        h3 = self.process_single_channel(im[:, :, 2])
-        return np.concatenate((h1, h2, h3))
+    def process_img(self, img):
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        h = self.process_single_channel(img)
+        return h
 
 
 if __name__ == "__main__":
