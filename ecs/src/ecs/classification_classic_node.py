@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
+import cv2
 import rospy
 import rospkg
 import numpy as np
 from joblib import load
 from sklearn import svm
 from std_msgs.msg import Empty, String
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 from ecs.srv import Descriptor
 
@@ -23,7 +24,7 @@ class ImageBasedEnvironmentClassification:
         self.classifier_path = os.path.join(rospack.get_path(
             self.settings["classifier_pkg"]), self.settings["classifier_file"])
         self.image_subscriber = rospy.Subscriber(
-            self.settings["camera_topic"], Image, callback=self.image_subscriber_callback, queue_size=1)
+            self.settings["camera_topic"], CompressedImage, callback=self.image_subscriber_callback, queue_size=1)
         self.trigger_subscriber = rospy.Subscriber(
             self.settings["trigger_topic"], Empty, callback=self.trigger_callback, queue_size=1)
         self.decision_publisher = rospy.Publisher(
@@ -43,16 +44,21 @@ class ImageBasedEnvironmentClassification:
         self.settings = rospy.get_param("ecs_ibec")
 
     def image_subscriber_callback(self, msg):
-        self.img = self.cv_bridge.imgmsg_to_cv2(
-            msg, desired_encoding="CV_8UC3")
+        data_arr = np.frombuffer(msg.data, np.uint8)
+        #data_arr = np.fromstring(msg.data, np.uint8)
+        self.img = cv2.imdecode(data_arr, cv2.IMREAD_COLOR)
+        #self.img = self.cv_bridge.imgmsg_to_cv2(
+        #    msg, desired_encoding="CV_8UC3")
 
     def descriptor_service_client(self):
         rospy.wait_for_service(self.settings["descriptor_service"])
+        if self.img is None:
+            return None
         try:
             descriptor_service = rospy.ServiceProxy(
                 self.settings["descriptor_service"], Descriptor)
             resp1 = descriptor_service(
-                self.cv_bridge.cv2_to_imgmsg(self.img, encoding="CV_8UC3"))
+                self.cv_bridge.cv2_to_imgmsg(self.img, encoding="bgr8"))
             return resp1.data
         except rospy.ServiceException as e:
             print("Service call failed: %s" % e)
@@ -61,8 +67,11 @@ class ImageBasedEnvironmentClassification:
         self.process()
 
     def process(self):
-        desc_vector = self.descriptor_service_client()
+        desc_vector = np.asarray(self.descriptor_service_client())
+        if desc_vector is None:
+            return
         prediction = self.classifier.predict(desc_vector.reshape(1, -1))[0]
+        self.print_info(f"prediction: {prediction}")
         prediction_text = self.settings.get("class_mapping").get(str(prediction))
         if prediction_text is None:
             self.print_info(f"Unknown class prediction [class mapping is missing]")
