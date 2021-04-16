@@ -14,6 +14,11 @@ ecs_data_acquisition:
         { "sensitivity_threshold": 1.4, "window_length": 40, "var_stable": 1.0 }
       republish: 1
 
+centrist_descriptor:
+  descriptor_service: /ecs/descriptor
+  spatial_dicision: 4
+  descriptor_length: 16
+
 ecs_ibec:
   trigger_topic: /ecs/trigger
   camera_topic: /camera/color/image_raw
