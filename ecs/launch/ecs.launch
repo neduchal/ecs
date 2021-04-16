@@ -3,25 +3,17 @@
   <!-- LOAD YAML FILE PARAMETERS -->
   <rosparam file="$(find ecs)/config/parameters.yaml" />
 
+  <node pkg="ecs" type="example_sensors_node.py" name="sensors_node" output="screen" respawn="false" respawn_delay="0" />
+
   <!-- DESCRIPTOR NODE IN CASE OF CLASSIC CLASSIFICATION APPROACH (pick one) -->
-  <node pkg="ecs" type="centrist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0">
-    <param name="spatial_division" value="4" />
-    <param name="descriptor_length" value="16" />
-  </node>
-  />
+  <node pkg="ecs" type="centrist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" />
+
   <!-- <node pkg="ecs" type="gist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" /> -->
 
   <node pkg="ecs" type="data_acquisition_node.py" name="ecd_node" output="screen" respawn="false" respawn_delay="0" />
 
   <!-- IMAGE BASED CLASSIFICATION NODE -->
-  <node pkg="ecs" type="classification_classic_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0">
-    <!-- EXAMPLE OF JOBLIB SETTINGS: Classifier is SVM based on GIST with default settings in leargist package -->
-    <param name="/classifier_classic" value="$(find ecs)/joblibs/svm_centrist_4_4_16.joblib" />
-    <param name="/image_topic" value="/camera/image_raw" />
-    <param name="/trigger_topic" value="/ecs/trigger" />
-    <param name="/decision_topic" value="/ecs/decision" />
-    <param name="/descriptor_service" value="/ecs/descriptor" />
-  </node>
+  <node pkg="ecs" type="classification_classic_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" />
   <!-- <node pkg="ecs" type="classification_torch_node.py" name="ibec_node" output="screen" respawn="false" respawn_delay="0" /> -->
 
   <!-- ROBOT BEHAVIOR ADAPTATION NODE -->

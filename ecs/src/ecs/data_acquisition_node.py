@@ -35,6 +35,8 @@ class DataAcquisition:
             rospy.logwarn(
                 "Sensor %s is not subscribed by the node", msg.sensor)
         sensor = [item for item in self.sensors if item["name"] == msg.sensor]
+        sensor = sensor[0]
+        #self.print_info(f"{sensor}")        
         if sensor.get("republish") == 1:
             env_msg = EnvValue()
             env_msg.layer = sensor["name"]

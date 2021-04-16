@@ -1,24 +1,32 @@
+sensors_node:
+  input_topic: /sensors
+  sensors_topic: /ecs/sensors
+
 # ECS CHANGE DETECTOR PARAMETERS
 ecs_data_acquisition:
   sensors_topic: /ecs/sensors
   trigger_topic: /ecs/trigger
   gridmap_topic: /ecs/map
   sensors:
-    - name: sensor1
+    - name: temperature_sensor
       method: diffratio
       parameters: { "sensitivity_threshold": 1.4, "min_length": 40 }
-      republish: 1
-    - name: sensor2
+      republish: 0
+    - name: humidity_sensor
+      method: diffratio
+      parameters: { "sensitivity_threshold": 1.4, "min_length": 40 }
+      republish: 0    
+    - name: distance_sensor
       method: varratio
       parameters:
-        { "sensitivity_threshold": 1.4, "window_length": 40, "var_stable": 1.0 }
-      republish: 1
+        { "sensitivity_threshold": 1.4, "window_length": 40, "var_stable": 0.1 }
+      republish: 0
 
 ecs_ibec:
   trigger_topic: /ecs/trigger
-  camera_topic: /camera/color/image_raw
+  camera_topic: /camera/color/image_raw/compressed
   decision_topic: /ecs/decision
-  network_name: "vgg16"
+  network_name: "resnext"
   network_device: "gpu"
   number_of_classes: 2
   class_mapping:

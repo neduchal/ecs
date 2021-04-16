@@ -32,6 +32,7 @@ add_message_files(
   FILES
   EnvValue.msg
   SensorValue.msg
+  Sensors.msg
 )
 
 ## Generate services in the 'srv' folder
