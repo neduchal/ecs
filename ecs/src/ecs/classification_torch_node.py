@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import cv2
 import rospy
 import rospkg
 import numpy as np
@@ -15,7 +16,7 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 import pretrainedmodels
 from std_msgs.msg import Empty, String
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 from PIL import Image as pImage
 
@@ -34,7 +35,7 @@ class ImageBasedEnvironmentClassification:
         if self.settings.get("number_of_classes") == None:
             self.settings["number_of_classes"] = 2
         self.image_subscriber = rospy.Subscriber(
-            self.settings["camera_topic"], Image, callback=self.image_subscriber_callback, queue_size=1)
+            self.settings["camera_topic"], CompressedImage, callback=self.image_subscriber_callback, queue_size=1)
         self.trigger_subscriber = rospy.Subscriber(
             self.settings["trigger_topic"], Empty, callback=self.trigger_callback, queue_size=1)
         self.decision_publisher = rospy.Publisher(
@@ -113,8 +114,9 @@ class ImageBasedEnvironmentClassification:
         self.net.eval()
 
     def image_subscriber_callback(self, msg):
-        self.img = self.cv_bridge.imgmsg_to_cv2(
-            msg, desired_encoding="CV_8UC3")
+        data_arr = np.frombuffer(msg.data, np.uint8)
+        #data_arr = np.fromstring(msg.data, np.uint8)
+        self.img = cv2.imdecode(data_arr, cv2.IMREAD_COLOR)
 
     def trigger_callback(self, msg):
         self.process()

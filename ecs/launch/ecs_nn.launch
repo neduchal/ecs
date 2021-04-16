@@ -4,12 +4,8 @@
   <rosparam file="$(find ecs)/config/parameters_nn.yaml" />
 
   <!-- DESCRIPTOR NODE IN CASE OF CLASSIC CLASSIFICATION APPROACH (pick one) -->
-  <node pkg="ecs" type="centrist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0">
-    <param name="spatial_division" value="4" />
-    <param name="descriptor_length" value="16" />
-  </node>
-  />
   <!-- <node pkg="ecs" type="gist_node.py" name="descriptor_node" output="screen" respawn="false" respawn_delay="0" /> -->
+  <node pkg="ecs" type="example_sensors_node.py" name="sensors_node" output="screen" respawn="false" respawn_delay="0" />
 
   <node pkg="ecs" type="data_acquisition_node.py" name="ecd_node" output="screen" respawn="false" respawn_delay="0" />
 
